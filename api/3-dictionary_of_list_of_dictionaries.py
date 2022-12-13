@@ -7,7 +7,7 @@ import requests
 
 if __name__ == "__main__":
     dict_tasks = {}
-    employees_d = requests.get('https://jsonplaceholder.typicode.com/users/').json()
+    empl_d = requests.get('https://jsonplaceholder.typicode.com/users/').json()
     todos_d = requests.get("https://jsonplaceholder.typicode.com/todos").json()
 
     dict_tasks = {item.get("id"):
@@ -16,7 +16,7 @@ if __name__ == "__main__":
                     "completed": j.get("completed")}
                    for j in todos_d
                    if j.get("userId") == item.get("id")]
-                  for item in employees_d}
+                  for item in empl_d}
 
     with open("todo_all_employees.json", 'w') as f:
         json.dump(dict_tasks, f)
