@@ -3,19 +3,20 @@
 
 import json
 import requests
-from sys import argv
 
 
 if __name__ == "__main__":
-    url = "https://jsonplaceholder.typicode.com/"
-    users = requests.get(url + "users").json()
+    dict_tasks = {}
+    employees_d = requests.get('https://jsonplaceholder.typicode.com/users/').json()
+    todos_d = requests.get("https://jsonplaceholder.typicode.com/todos").json()
 
-    with open("todo_all_employees.json", "w") as jsonfile:
-        json.dump({
-            u.get("id"): [{
-                "username": u.get("username"),
-                "task": t.get("title"),
-                "completed": t.get("completed")
-            } for t in requests.get(url + "todos",
-                                    params={"userId": u.get("id")}).json()]
-            for u in users}, jsonfile)
+    dict_tasks = {item.get("id"):
+                  [{"username": item.get("username"),
+                    "task": j.get("title"),
+                    "completed": j.get("completed")}
+                   for j in todos_d
+                   if j.get("userId") == item.get("id")]
+                  for item in employees_d}
+
+    with open("todo_all_employees.json", 'w') as f:
+        json.dump(dict_tasks, f)
